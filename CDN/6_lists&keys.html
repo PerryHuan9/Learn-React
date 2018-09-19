@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React中的Lists和Keys</title>
+    <script src="./react/react.development.js"></script>
+    <script src="./react/react-dom.development.js"></script>
+    <script src="./react/babel.min.js"></script>
+
+</head>
+<body>
+    <div id="root"></div>
+    <div id="root1"></div>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    
+    <script type="text/babel">
+        const users = [ 'perry' , 'Ximon' , 'Zhudi' , 'Even' , 'Lisa' ];
+        const listItems = users.map( (value) =>
+            <li key={value}>{ value }</li>
+        );
+        ReactDOM.render(
+            <ul>{ listItems }</ul> ,
+            document.getElementById( 'root' ) ,
+        );
+
+        function UserList(props) {
+            if (!props.users) return null;
+            const jsxList = props.users.map( (value,index) => (
+                <li key={index.toString()}>{ value }</li>
+            ) );
+            return (
+                <ul>
+                    { jsxList }
+                </ul>
+            );
+        }
+
+        ReactDOM.render(
+            <UserList users={ users }/> ,
+            document.getElementById( 'root1' ) ,
+        );
+    
+    </script>
+
+
+</body>
+</html>

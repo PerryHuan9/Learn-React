@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React处理事件</title>
+    <script src="./react/react.development.js"></script>
+    <script src="./react/react-dom.development.js"></script>
+    <script src="./react/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="root1"></div>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <script type="text/babel">
+        function ActionLink() {
+            function handleClick(e) {
+                //不能通过返回false阻止默认事件的发生，只能手动调用函数
+                e.preventDefault();
+                console.log( '被点击了' );
+                alert( '被打了' );
+            }
+
+            return (
+                <a href="http://www.baidu.com" onClick={ handleClick }>点我</a>
+            )
+        }
+
+        ReactDOM.render(
+            <ActionLink/> ,
+            document.getElementById( 'root' ) ,
+        );
+
+        class Toggle extends React.Component {
+            constructor(props) {
+                super( props );
+                this.state = {isToggleOn : true};
+                //需要绑定，如果不绑定，当被点击调用方法时，this将为undefined
+                this.handleClick = this.handleClick.bind( this );
+            }
+
+            handleClick(arg,e) {
+                alert('我会喊'+arg);
+                this.setState( (preState) => ( {isToggleOn : !preState.isToggleOn} ) );
+            }
+
+            //如果不对方法进行绑定，可以使用属性初始化语法，,这个为实验性语法
+            handleClickFun = () => {
+                this.setState( (preState) => ( {isToggleOn : !preState.isToggleOn} ) );
+            };
+            //如果没有使用属性初始化语法绑定this，那么使用箭头函数
+            //如果要为事件处理函数传参，那么要么使用箭头函数，要没使用bind绑定
+            render() {
+                let arg=888;
+                return (
+                    <div>
+                        <button onClick={ this.handleClick }>
+                            { this.state.isToggleOn ? 'ON' : 'OFF' }
+                        </button>
+                        <button onClick={ this.handleClickFun}>
+                            { this.state.isToggleOn ? 'ON' : 'OFF' }
+                        </button>
+                        <button onClick={ (e) => this.handleClick( arg,e ) }>
+                            { this.state.isToggleOn ? 'ON' : 'OFF' }
+                        </button>
+                        <button onClick={this.handleClick.bind(this,666)}>
+                            {this.state.isToggleOn?'ON':'OFF'}
+                        </button>
+                        
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(
+            <Toggle/> ,
+            document.getElementById( 'root2' ) ,
+        );
+    
+    
+    </script>
+
+</body>
+</html>

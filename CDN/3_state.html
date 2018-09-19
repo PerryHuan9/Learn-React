@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learn React State</title>
+    <script src="./react/react.development.js"></script>
+    <script src="./react/react-dom.development.js"></script>
+    <script src="./react/babel.min.js"></script>
+
+</head>
+<body>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <div id="root"></div>
+    <script type="text/babel">
+        function Clock2(props) {
+            return ( <h2>It's { props.time.toLocaleTimeString() }</h2> )
+        }
+
+        function tick() {
+            ReactDOM.render(
+                <Clock2 time={ new Date() }/> ,
+                document.getElementById( 'root3' ) ,
+            )
+        }
+
+        setInterval( tick , 1000 );
+        //上面的组件并没有真正封装好Clock组件，还需间隙函数调用
+        //要实现让一个组件内部自动更新需要用到state，state是类定义的专有特性
+
+        class Clock extends React.Component {
+            //state的初始化只能在constructor中
+            constructor(props) {
+                super( props );
+                this.state = {time : new Date() , count : 0};
+            }
+
+            render() {
+                return ( <h2>It is { this.state.time.toLocaleTimeString() }.{ this.state.count }</h2> );
+            }
+
+            componentDidMount() {
+                this.timerId = setInterval( () => this.tick() , 1000 );
+            }
+
+            componentWillUnmount() {
+                clearInterval( this.timerId );
+            }
+
+            //在使用setState更新状态时，不能依赖上一次的状态或props的值，
+            //这是因为React对state(多个setState可能合并在一起，进而一起更新)和props的更新都是异步的，
+            // 如必要依赖上一次的更新，为setState传入函数
+            tick() {
+                this.setState( {
+                    time : new Date()
+                } );
+                this.setState( (preState , props) => ( {count : ++preState.count} ) );
+
+
+            }
+
+
+        }
+
+        ReactDOM.render(
+            <Clock/> ,
+            document.getElementById( 'root' ) ,
+        )
+    
+    
+    </script>
+
+
+</body>
+</html>

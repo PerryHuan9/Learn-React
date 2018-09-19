@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React状态提升</title>
+    <script src="./react/react.development.js"></script>
+    <script src="./react/react-dom.development.js"></script>
+    <script src="./react/babel.min.js"></script>
+
+</head>
+<body>
+    <div id="root"></div>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <div id="root4"></div>
+    <div id="root5"></div>
+    <div id="root6"></div>
+    
+    
+    <script type="text/babel">
+
+        function JageBoil(props){
+            return (
+                <p>
+                    The water is { props.temperature >=100 ? 'boiling' : 'not boiling' }.
+                </p>
+            )
+        }
+
+        class TemperatureInput extends React.Component{
+            constructor(props){
+                super(props);
+            }
+
+            static scaleNames = {
+                c : 'Celsius' ,
+                f : 'Fahrenheit'
+            };
+
+            handleChange(e){
+                this.props.onTemperatureChange(e.target.value);
+            }
+
+            render(){
+                const temperature = this.props.temperature;
+                return (
+                    <fieldset>
+                        <legend>The { TemperatureInput.scaleNames[ this.props.scale ] } temperature is</legend>
+                        <input type="text" value={ temperature } onChange={ e => this.handleChange(e) }/>
+                    </fieldset>
+                )
+            }
+        }
+
+        class TemperatureCaculator extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    scale : 'c' ,
+                    temperature : "" ,
+                }
+            }
+
+            handleCelsiusTemperature(temperature){
+                this.setState({
+                    scale : 'c' ,
+                    temperature ,
+                });
+            }
+
+            handleFahrenheitTemperature(temperature){
+                this.setState({
+                    scale : 'f' ,
+                    temperature ,
+                })
+            }
+
+            tryConvert(temerature , convert){
+                const input = parseFloat(temerature);
+                if(Number.isNaN(input)){
+                    return ""
+                }
+                const output = convert(input);
+                const round = Math.round(output * 1000) / 1000;
+                return round.toString();
+            }
+
+            toCelsius(fa){
+                return (fa - 32) * 5 / 9;
+            }
+
+            toFath(ce){
+                return ce * 9 / 5 + 32;
+            }
+
+
+            render(){
+                const temperature = this.state.temperature;
+                const celsius = this.state.scale === 'f' ?
+                    this.tryConvert(temperature , this.toCelsius) : temperature;
+                const fa = this.state.scale === 'c' ?
+                    this.tryConvert(temperature , this.toFath) : temperature;
+                return (
+                    <div>
+                        <TemperatureInput scale="c" temperature={ celsius }
+                                          onTemperatureChange={ e => this.handleCelsiusTemperature(e) }/>
+                        <TemperatureInput scale="f" temperature={ fa }
+                                          onTemperatureChange={ tem => this.handleFahrenheitTemperature(tem) }/>
+                        <JageBoil temperature={ parseFloat(this.state.temperature) }/>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(
+            <TemperatureCaculator/> ,
+            document.getElementById('root') ,
+        )
+    
+    
+    </script>
+</body>
+</html>

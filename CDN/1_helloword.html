@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学习React第一步</title>
+    <script src="https://cdn.bootcss.com/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.bootcss.com/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.bootcss.com/babel-standalone/6.26.0/babel.min.js"></script>
+
+</head>
+<body>
+    <div id="app"></div>
+    <div id="root"></div>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <div id="root4"></div>
+    <div id="root5"></div>
+    <div id="root6"></div>
+    <div id="root7"></div>
+    <div id="root8"></div>
+    
+    
+    
+    <script type="text/babel">
+        ReactDOM.render(
+            <h1>人间任纵横</h1> ,
+            document.getElementById('app')
+        );
+        /**
+         建议使用括号把jsx包裹起来，可以避免分号自动插入的陷阱
+         需要明确：jsx在编译之后就变成了常规的js对象
+         由于 JSX 比 HTML 更接近 JavaScript ，因此 React DOM 使用 camelCase属性命名约定
+         而不是 HTML 属性名称。例如，在 JSX 中，class 变成了 className，tabindex 变成了 tabIndex。
+         **/
+            //1、在JSX中嵌入表达式
+        let word = '跨海斩巨鲸';
+        let element = (<h1>倚天抽长剑,{ word }</h1>);
+        ReactDOM.render(
+            element ,
+            document.getElementById('root') ,
+        );
+
+        function formatName(user){
+            return user.firstName + ' ' + user.lastName;
+        }
+
+        const user = {
+            firstName : 'Perry' ,
+            lastName : 'Huang' ,
+        };
+        ReactDOM.render(
+            <h1>Hello,{ formatName(user) }</h1> ,
+            document.getElementById('root2') ,
+        );
+
+        //2、JSX也是一个表达式
+        function getGreeting(user){
+            if(user){
+                return <h1>Hello,{ formatName(user) }</h1>;
+            }else{
+                return <h1>Hello,Stranger</h1>;
+            }
+        }
+
+        ReactDOM.render(
+            getGreeting(user) ,
+            document.getElementById('root3') ,
+        );
+
+        //3、用JSX指定属性值
+        let href = 'http://www.baidu.com';
+        const ele = <div align="center">焦点</div>;
+        const ele2 = <a href={ href } target="_blank">百度</a>;
+        ReactDOM.render(
+            ele2 ,
+            document.getElementById('root4') ,
+        );
+
+        //4、用JSX指定子元素
+        let parent = (
+            <div>
+                <h2>标题</h2>
+                <p>内容</p>
+            </div>
+        );
+
+        //5、JSX防止注入攻击,默认情况渲染之前，ReactDOM会格式化JSX中的所有值，
+        // 从而保证用户无法注入任何运用之外的代码
+
+        //6、JSX表示对象,JSX将会被Babel编译成对象
+        const jsx = (
+            <h1 className="greeting">
+                Hello,Perry!
+            </h1>
+        );
+        //编译后如下
+        const obj = React.createElement(
+            'h1' ,
+            {className : 'greeting'} ,
+            'Hello,Perry!'
+        );
+        ReactDOM.render(
+            obj ,
+            document.getElementById('root5') ,
+        );
+    
+    
+    </script>
+
+
+</body>
+</html>

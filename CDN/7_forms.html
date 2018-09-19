@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React forms</title>
+    <script src="./react/react.development.js"></script>
+    <script src="./react/react-dom.development.js"></script>
+    <script src="./react/babel.min.js"></script>
+
+</head>
+<body>
+    <div id="root"></div>
+    <div id="root1"></div>
+    <br>
+    <br>
+    <br>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <div id="root4"></div>
+    <script type="text/babel">
+        class NameForm extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    value : props.value
+                }
+            }
+
+            handleChange(e){
+                this.setState({
+                    value : e.target.value
+                })
+            }
+
+            render(){
+                return (
+                    <div>
+                        <input type="text" value={ this.state.value } onChange={ e => this.handleChange(e) }/>
+                        <p>{ this.state.value }</p>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(
+            <NameForm value="我是黄益凛"/> ,
+            document.getElementById('root') ,
+        );
+
+        function handle(e){
+            alert(e.target.name);
+        }
+
+        //在输入组件上指定props可限制输入
+        ReactDOM.render(
+            <input type="text" value="hi" name="abc" onChange={ handle }/> ,
+            document.getElementById('root1') ,
+        );
+        //当值重新渲染为null或undefined后无效
+        setTimeout(function(){
+            ReactDOM.render(
+                <input type="text" value={ null } name="abc"/> ,
+                document.getElementById('root1') ,
+            );
+        } , 3000);
+
+
+        //处理多个输入元素
+        class Reservation extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    name : " " ,
+                    age : " " ,
+                    sex : true ,
+                }
+            }
+
+            handleChange(e){
+                const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+                this.setState({
+                    [ e.target.name ] : value
+                })
+
+            }
+
+            render(){
+                return (
+                    <form action="">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td><label htmlFor="name">Name:</label></td>
+                                <td colSpan="2">
+                                    <input type="text" id="name" value={ this.state.name } name="name"
+                                           onChange={ e => this.handleChange(e) }/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <label htmlFor="man">男</label>
+                                    <input type="checkbox" id="man" name="sex" checked={ this.state.sex }
+                                           onChange={ e => this.handleChange(e) }/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>{ this.state.name }</td>
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>{ this.state.sex.toString() }</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                )
+
+            }
+        }
+
+        ReactDOM.render(
+            <Reservation/> ,
+            document.getElementById('root2')
+        )
+    
+    
+    </script>
+
+
+</body>
+</html>
